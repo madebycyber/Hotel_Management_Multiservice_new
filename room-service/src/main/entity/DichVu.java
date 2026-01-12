@@ -1,0 +1,15 @@
+// Entity DichVu
+@Entity
+@Table(name = "\"DICHVU\"")
+@Data
+public class DichVu {
+    @Id
+    @Column(name = "\"MADV\"", insertable = false, updatable = false)
+    private String maDichVu;
+
+    @Column(name = "\"TENDICHVU\"")
+    private String tenDichVu;
+    
+    @Column(name = "\"DONGIA\"")
+    private BigDecimal donGia;
+}
