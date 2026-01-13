@@ -1,45 +1,84 @@
-import React from 'react';
-import { Form, Input, Button, Card, message } from 'antd';
-import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axiosClient from '../api/axiosClient';
-import { useNavigate } from 'react-router-dom';
 
-const Login = () => {
-    const navigate = useNavigate();
+export default function Login() {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+  const location = useLocation();
 
-    const onFinish = async (values) => {
-        try {
-            // Gọi API Login
-            // Lưu ý: Backend trả về chuỗi Token trực tiếp (String)
-            const response = await axiosClient.post('/auth/login', values);
-            
-            // Lưu token vào LocalStorage
-            localStorage.setItem('token', response.data);
-            
-            message.success("Đăng nhập thành công!");
-            navigate('/dashboard'); // Chuyển hướng sang trang chính
-        } catch (error) {
-            message.error("Đăng nhập thất bại! Kiểm tra lại tài khoản.");
-        }
-    };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
 
-    return (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: '#f0f2f5' }}>
-            <Card title="Đăng nhập hệ thống" style={{ width: 400 }}>
-                <Form name="login" onFinish={onFinish}>
-                    <Form.Item name="username" rules={[{ required: true, message: 'Nhập Username!' }]}>
-                        <Input prefix={<UserOutlined />} placeholder="Username" />
-                    </Form.Item>
-                    <Form.Item name="password" rules={[{ required: true, message: 'Nhập Password!' }]}>
-                        <Input.Password prefix={<LockOutlined />} placeholder="Password" />
-                    </Form.Item>
-                    <Form.Item>
-                        <Button type="primary" htmlType="submit" block>Đăng nhập</Button>
-                    </Form.Item>
-                </Form>
-            </Card>
-        </div>
-    );
-};
+    try {
+      const response = await axiosClient.post('/auth/login', { username, password });
+      localStorage.setItem('token', response.data.token);
+      navigate('/dashboard');
+    } catch (err) {
+      if (err.response?.status === 401) {
+        setError('Tên đăng nhập hoặc mật khẩu không đúng');
+      } else {
+        setError('Có lỗi xảy ra. Vui lòng thử lại.');
+      }
+    }
+  };
 
-export default Login;
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
+        <h2 className="text-3xl font-bold text-center mb-6 text-primary-dark">
+          Đăng nhập HotelHub
+        </h2>
+
+        {location.search.includes('expired') && (
+          <div className="mb-4 p-3 bg-yellow-100 text-yellow-800 rounded">
+            Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.
+          </div>
+        )}
+
+        {error && <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">{error}</div>}
+
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label className="block text-gray-700 mb-2">Tên đăng nhập</label>
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+              required
+            />
+          </div>
+
+          <div className="mb-6">
+            <label className="block text-gray-700 mb-2">Mật khẩu</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+              required
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="w-full bg-primary text-white py-3 rounded-lg hover:bg-primary-dark transition"
+          >
+            Đăng nhập
+          </button>
+        </form>
+
+        <p className="text-center mt-4 text-gray-600">
+          Chưa có tài khoản?{' '}
+          <a href="/register" className="text-accent hover:underline">
+            Đăng ký
+          </a>
+        </p>
+      </div>
+    </div>
+  );
+}
