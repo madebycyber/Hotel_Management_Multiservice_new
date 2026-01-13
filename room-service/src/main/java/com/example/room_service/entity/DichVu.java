@@ -1,3 +1,9 @@
+package com.example.room_service.entity;
+
+import jakarta.persistence.*;
+import lombok.Data;
+import java.math.BigDecimal;
+
 // Entity DichVu
 @Entity
 @Table(name = "\"DICHVU\"")

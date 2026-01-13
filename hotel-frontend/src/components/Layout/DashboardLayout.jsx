@@ -16,7 +16,10 @@ import {
 const menuItems = [
   { name: 'Dashboard', icon: BuildingOffice2Icon, path: '/dashboard' },
   { name: 'Phòng', icon: BuildingOffice2Icon, path: '/rooms' },
+  { name: 'Loại phòng', icon: CalendarIcon, path: '/room-types' },
   { name: 'Đặt phòng', icon: CalendarIcon, path: '/bookings' },
+  { name: 'Đặt dịch vụ', icon: CalendarIcon, path: '/services' },
+  { name: 'Dịch vụ', icon: CalendarIcon, path: '/dich-vu' },
   { name: 'Khách hàng', icon: UsersIcon, path: '/customers' },
   { name: 'Hóa đơn', icon: CurrencyDollarIcon, path: '/invoices' },
   { name: 'Cài đặt', icon: Cog6ToothIcon, path: '/settings' },
@@ -139,8 +142,8 @@ export default function DashboardLayout({ children }) {
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Header */}
-        <header className="bg-white dark:bg-gray-800 shadow-sm px-4 py-3 flex items-center justify-between">
+      {/* Header */}
+        <header className="bg-white dark:bg-gray-800 shadow-sm px-4 py-3 flex items-center justify-between relative z-30">
           <div className="flex items-center space-x-4">
             <button
               onClick={() => setMobileMenuOpen(true)}
@@ -149,55 +152,84 @@ export default function DashboardLayout({ children }) {
               <Bars3Icon className="w-8 h-8" />
             </button>
             <h2 className="text-xl font-semibold text-primary-dark dark:text-primary">
-              Dashboard Quản lý Khách sạn
+              Dashboard Quản lý
             </h2>
           </div>
 
-        <div className="flex items-center space-x-4">
-        {/* Dark mode toggle (giữ nguyên nếu có) */}
-        
-        <button
-            onClick={() => setDarkMode(prev => !prev)}
-            className="p-2.5 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-            title={darkMode ? 'Light Mode' : 'Dark Mode'}
-        >
-            {darkMode ? <SunIcon className="w-5 h-5 text-yellow-500" /> : <MoonIcon className="w-5 h-5 text-indigo-600" />}
-        </button>
-
-        {/* Theme Selector Dropdown */}
-        <div className="relative group">
-            <button className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700">
-            <div className="w-6 h-6 rounded-full" style={{ backgroundColor: 'var(--color-primary)' }}></div>
-            <span className="text-sm font-medium capitalize">{theme.replace('-', ' ')}</span>
+          <div className="flex items-center space-x-4">
+            {/* Dark mode toggle */}
+            <button
+              onClick={() => setDarkMode((prev) => !prev)}
+              className="p-2.5 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+              title={darkMode ? 'Light Mode' : 'Dark Mode'}
+            >
+              {darkMode ? (
+                <SunIcon className="w-5 h-5 text-yellow-500" />
+              ) : (
+                <MoonIcon className="w-5 h-5 text-indigo-600" />
+              )}
             </button>
 
-            {/* Dropdown menu */}
-            <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-gray-800 shadow-xl rounded-xl border border-gray-200 dark:border-gray-700 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-50 overflow-hidden">
-            <div className="py-2">
-                {[
-                { name: 'default', label: 'Teal Luxury', color: '#0F766E' },
-                { name: 'navy', label: 'Navy Elegant', color: '#1E40AF' },
-                { name: 'earth', label: 'Warm Earth', color: '#8B5E3C' },
-                { name: 'lavender', label: 'Lavender Sophisticated', color: '#7C3AED' },
-                { name: 'emerald-dark', label: 'Emerald Dark', color: '#059669' },
-                ].map((t) => (
-                <button
-                    key={t.name}
-                    onClick={() => setTheme(t.name)}
-                    className={`flex items-center w-full px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition ${
-                    theme === t.name ? 'bg-gray-100 dark:bg-gray-700' : ''
-                    }`}
-                >
-                    <div className="w-8 h-8 rounded-full mr-3" style={{ backgroundColor: t.color }}></div>
-                    <span className="font-medium">{t.label}</span>
-                    {theme === t.name && <span className="ml-auto text-green-500">✓</span>}
-                </button>
-                ))}
+            {/* Theme Selector Dropdown - ĐÃ SỬA LỖI */}
+            <div className="relative group h-full flex items-center">
+              <button className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                <div
+                  className="w-6 h-6 rounded-full border border-gray-200 dark:border-gray-600"
+                  style={{ backgroundColor: 'var(--color-primary)' }}
+                ></div>
+                <span className="text-sm font-medium capitalize text-gray-700 dark:text-gray-300">
+                  {theme.replace('-', ' ')}
+                </span>
+              </button>
+
+              {/* Dropdown menu */}
+              <div className="absolute right-0 top-full mt-2 w-64 bg-white dark:bg-gray-800 shadow-xl rounded-xl border border-gray-200 dark:border-gray-700 
+                              invisible opacity-0 group-hover:visible group-hover:opacity-100 
+                              transition-all duration-200 transform origin-top-right z-50
+                              before:content-[''] before:absolute before:-top-4 before:left-0 before:w-full before:h-4 before:bg-transparent">
+                {/* Giải thích fix:
+                   1. top-full: Căn menu ngay dưới đáy của cha.
+                   2. invisible/visible: Tránh click nhầm khi ẩn.
+                   3. before:... : Tạo một lớp trong suốt cao 4 unit ở phía trên menu để lấp khoảng trống margin, giúp chuột không bị mất focus khi rê xuống.
+                */}
+                <div className="py-2 max-h-[80vh] overflow-y-auto">
+                  {[
+                    { name: 'default', label: 'Teal Luxury', color: '#0F766E' },
+                    { name: 'navy', label: 'Navy Elegant', color: '#1E40AF' },
+                    { name: 'earth', label: 'Warm Earth', color: '#8B5E3C' },
+                    { name: 'lavender', label: 'Lavender Sophisticated', color: '#7C3AED' },
+                    { name: 'emerald-dark', label: 'Emerald Dark', color: '#059669' },
+                  ].map((t) => (
+                    <button
+                      key={t.name}
+                      onClick={() => setTheme(t.name)}
+                      className={`flex items-center w-full px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition ${
+                        theme === t.name ? 'bg-gray-50 dark:bg-gray-700/50' : ''
+                      }`}
+                    >
+                      <div
+                        className="w-8 h-8 rounded-full mr-3 border border-gray-200 dark:border-gray-600 shadow-sm"
+                        style={{ backgroundColor: t.color }}
+                      ></div>
+                      <span className="font-medium text-gray-700 dark:text-gray-200">
+                        {t.label}
+                      </span>
+                      {theme === t.name && (
+                        <span className="ml-auto text-primary font-bold">✓</span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
+
+            <div className="flex items-center gap-2 border-l pl-4 border-gray-300 dark:border-gray-600">
+                 <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white font-bold">
+                    A
+                 </div>
+                 <span className="text-gray-700 dark:text-gray-300 font-medium hidden sm:block">Admin</span>
             </div>
-        </div>
-        <span className="text-gray-700 dark:text-gray-300 font-medium">Admin</span>
-        </div>
+          </div>
         </header>
 
         {/* Content */}

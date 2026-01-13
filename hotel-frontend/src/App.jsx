@@ -8,6 +8,8 @@ import Bookings from './pages/Bookings';     // ví dụ trang Đặt phòng
 import Customers from './pages/Customers';   // ví dụ trang Khách hàng
 import Invoices from './pages/Invoices';     // ví dụ trang Hóa đơn
 import Settings from './pages/Settings';     // ví dụ trang Cài đặt
+import Services from './pages/Services';
+import LoaiPhong from './pages/LoaiPhong';
 
 import DashboardLayout from './components/Layout/DashboardLayout';
 
@@ -49,6 +51,17 @@ function App() {
         />
 
         <Route
+          path="/room-types"
+          element={
+            <PrivateRoute>
+              <DashboardLayout>
+                <LoaiPhong />
+              </DashboardLayout>
+            </PrivateRoute>
+          }
+        />
+
+        <Route
           path="/bookings"
           element={
             <PrivateRoute>
@@ -76,6 +89,17 @@ function App() {
             <PrivateRoute>
               <DashboardLayout>
                 <Invoices />
+              </DashboardLayout>
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/services"
+          element={
+            <PrivateRoute>
+              <DashboardLayout>
+                <Services />
               </DashboardLayout>
             </PrivateRoute>
           }

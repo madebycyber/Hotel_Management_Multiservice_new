@@ -1,109 +1,55 @@
-import React from 'react';
-import { Form, Input, Button, Card, message, Typography } from 'antd';
-import { UserOutlined, LockOutlined, IdcardOutlined } from '@ant-design/icons';
-import axiosClient from '../api/axiosClient';
+import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import axiosClient from '../api/axiosClient';
 
-const { Title } = Typography;
+export default function Register() {
+  const [formData, setFormData] = useState({
+    username: '',
+    password: '',
+    fullName: '', // Tùy chỉnh theo DTO backend
+  });
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
-const Register = () => {
-    const navigate = useNavigate();
-    const [form] = Form.useForm(); // Hook để reset form nếu cần
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
-    const onFinish = async (values) => {
-        // Kiểm tra mật khẩu nhập lại
-        if (values.password !== values.confirmPassword) {
-            message.error("Mật khẩu xác nhận không khớp!");
-            return;
-        }
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    try {
+      // Gọi API Register
+      await axiosClient.post('/api/auth/register', formData);
+      alert('Đăng ký thành công! Vui lòng đăng nhập.');
+      navigate('/login');
+    } catch (err) {
+      console.error(err);
+      // Lấy message lỗi từ backend nếu có
+      const msg = err.response?.data?.message || 'Đăng ký thất bại (Lỗi 403 thường do Security chặn)';
+      setError(msg);
+    }
+  };
 
-        try {
-            // Gọi API đăng ký
-            // Payload gửi đi: { username, password, fullName }
-            await axiosClient.post('/auth/register', {
-                username: values.username,
-                password: values.password,
-                fullName: values.fullName
-            });
-            
-            message.success("Đăng ký thành công! Vui lòng đăng nhập.");
-            navigate('/login'); // Chuyển hướng về trang đăng nhập
-        } catch (error) {
-            // Lấy thông báo lỗi từ Backend trả về (nếu có)
-            const errorMsg = error.response?.data?.message || "Đăng ký thất bại! Username có thể đã tồn tại.";
-            message.error(errorMsg);
-        }
-    };
-
-    return (
-        <div style={{ 
-            display: 'flex', 
-            justifyContent: 'center', 
-            alignItems: 'center', 
-            height: '100vh', 
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' // Background màu tím xanh
-        }}>
-            <Card style={{ width: 450, borderRadius: 10, boxShadow: '0 4px 12px rgba(0,0,0,0.15)' }}>
-                <div style={{ textAlign: 'center', marginBottom: 20 }}>
-                    <Title level={3}>Đăng ký tài khoản</Title>
-                    <p>Chào mừng bạn đến với hệ thống khách sạn</p>
-                </div>
-
-                <Form
-                    form={form}
-                    name="register"
-                    onFinish={onFinish}
-                    layout="vertical"
-                    size="large"
-                >
-                    <Form.Item
-                        name="fullName"
-                        rules={[{ required: true, message: 'Vui lòng nhập họ tên!' }]}
-                    >
-                        <Input prefix={<IdcardOutlined />} placeholder="Họ và tên đầy đủ" />
-                    </Form.Item>
-
-                    <Form.Item
-                        name="username"
-                        rules={[
-                            { required: true, message: 'Vui lòng nhập tên đăng nhập!' },
-                            { min: 4, message: 'Tên đăng nhập phải ít nhất 4 ký tự' }
-                        ]}
-                    >
-                        <Input prefix={<UserOutlined />} placeholder="Tên đăng nhập" />
-                    </Form.Item>
-
-                    <Form.Item
-                        name="password"
-                        rules={[
-                            { required: true, message: 'Vui lòng nhập mật khẩu!' },
-                            { min: 6, message: 'Mật khẩu phải ít nhất 6 ký tự' }
-                        ]}
-                    >
-                        <Input.Password prefix={<LockOutlined />} placeholder="Mật khẩu" />
-                    </Form.Item>
-
-                    <Form.Item
-                        name="confirmPassword"
-                        dependencies={['password']} // Validate phụ thuộc vào field password
-                        rules={[{ required: true, message: 'Vui lòng xác nhận mật khẩu!' }]}
-                    >
-                        <Input.Password prefix={<LockOutlined />} placeholder="Xác nhận mật khẩu" />
-                    </Form.Item>
-
-                    <Form.Item>
-                        <Button type="primary" htmlType="submit" block style={{ fontWeight: 'bold' }}>
-                            ĐĂNG KÝ NGAY
-                        </Button>
-                    </Form.Item>
-
-                    <div style={{ textAlign: 'center' }}>
-                        Đã có tài khoản? <Link to="/login" style={{ fontWeight: 'bold' }}>Đăng nhập ngay</Link>
-                    </div>
-                </Form>
-            </Card>
-        </div>
-    );
-};
-
-export default Register;
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4">
+      <div className="max-w-md w-full space-y-8 bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700">
+        <h2 className="text-center text-3xl font-extrabold text-primary-dark dark:text-primary">
+          Đăng ký tài khoản
+        </h2>
+        <form className="mt-8 space-y-4" onSubmit={handleRegister}>
+          {error && <div className="text-red-500 text-center text-sm p-2 bg-red-50 rounded">{error}</div>}
+          
+          <input name="username" onChange={handleChange} placeholder="Tên đăng nhập" required className="w-full px-4 py-3 rounded-lg border dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
+          <input name="password" type="password" onChange={handleChange} placeholder="Mật khẩu" required className="w-full px-4 py-3 rounded-lg border dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
+          <input name="fullName" onChange={handleChange} placeholder="Tên đầy đủ" className="w-full px-4 py-3 rounded-lg border dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
+          <button type="submit" className="w-full py-3 rounded-lg text-white bg-primary hover:bg-primary-dark shadow-lg shadow-primary/30 font-medium">
+            Đăng ký
+          </button>
+          <div className="text-center text-sm mt-4">
+            <Link to="/login" className="text-primary hover:underline">Quay lại đăng nhập</Link>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}

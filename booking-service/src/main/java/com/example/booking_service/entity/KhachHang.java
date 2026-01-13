@@ -1,0 +1,19 @@
+package com.example.booking_service.entity;
+
+import jakarta.persistence.*;  // Import toàn bộ JPA (Entity, Table, Id, Column...)
+import lombok.Data;            // Import Lombok
+
+@Entity
+@Table(name = "khachhang")
+@Data
+public class KhachHang {
+    @Id
+    @Column(name = "makh")
+    private String maKh;
+    
+    @Column(name = "tenkh")
+    private String tenKh;
+    private String email;
+    private String sdt;
+    private String diachi;
+}

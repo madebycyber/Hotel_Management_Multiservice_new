@@ -31,13 +31,13 @@ spring:
         - id: room-service
           uri: lb://ROOM-SERVICE
           predicates:
-            - Path=/api/rooms/**, /api/services/**
+            - Path=/api/rooms/**, /api/dich-vu/**, /api/loai-phong/**
 
         # 2. Booking Service
         - id: booking-service
           uri: lb://BOOKING-SERVICE
           predicates:
-            - Path=/api/bookings/**
+            - Path=/api/bookings/**, /api/services/**
 
         # 3. Identity Service
         - id: identity-service

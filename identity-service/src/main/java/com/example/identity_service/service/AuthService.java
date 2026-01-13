@@ -3,7 +3,6 @@ package com.example.identity_service.service;
 import org.springframework.jdbc.core.JdbcTemplate;
 import com.example.identity_service.dto.AuthRequest;
 import com.example.identity_service.entity.NguoiDung;
-import com.example.identity_service.entity.PhanQuyen;
 import com.example.identity_service.repository.NguoiDungRepository;
 import com.example.identity_service.repository.PhanQuyenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
-import java.util.Optional;
+
 
 @Service
 public class AuthService {

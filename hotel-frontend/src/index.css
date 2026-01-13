@@ -114,3 +114,28 @@ header {
 .dark .hover\:bg-gray-200:hover {
   background-color: #334155;
 }
+
+/* src/index.css - Thêm vào cuối file */
+
+/* Đảm bảo nội dung chính luôn có thể cuộn nếu vượt quá chiều cao màn hình */
+main, .dashboard-container {
+  overflow-y: auto;
+  height: 100%;
+  scrollbar-width: thin; /* Cho Firefox */
+}
+
+/* Tùy chỉnh thanh cuộn cho Chrome/Safari đẹp hơn */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-primary);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary-dark);
+}

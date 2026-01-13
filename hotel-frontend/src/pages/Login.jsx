@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import axiosClient from '../api/axiosClient';
 
 export default function Login() {
@@ -7,77 +7,79 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  const location = useLocation();
 
-  const handleSubmit = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    setError('');
-
     try {
-      const response = await axiosClient.post('/auth/login', { username, password });
-      localStorage.setItem('token', response.data.token);
-      navigate('/dashboard');
-    } catch (err) {
-      if (err.response?.status === 401) {
-        setError('Tên đăng nhập hoặc mật khẩu không đúng');
+      // Gọi API Login qua Gateway
+      const res = await axiosClient.post('/api/auth/login', {
+        username, // Đảm bảo khớp với field bên Backend (username/tenDangNhap)
+        password
+      });
+
+      // Lưu token (giả sử backend trả về { result: { token: "..." } })
+      if (res.data.result?.token) {
+        localStorage.setItem('token', res.data.result.token);
+        navigate('/'); // Chuyển về Dashboard
       } else {
-        setError('Có lỗi xảy ra. Vui lòng thử lại.');
+        // Fallback nếu cấu trúc response khác
+        localStorage.setItem('token', res.data.token); 
+        navigate('/');
       }
+    } catch (err) {
+      console.error(err);
+      setError('Đăng nhập thất bại. Vui lòng kiểm tra lại!');
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
-        <h2 className="text-3xl font-bold text-center mb-6 text-primary-dark">
-          Đăng nhập HotelHub
-        </h2>
-
-        {location.search.includes('expired') && (
-          <div className="mb-4 p-3 bg-yellow-100 text-yellow-800 rounded">
-            Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.
-          </div>
-        )}
-
-        {error && <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">{error}</div>}
-
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="block text-gray-700 mb-2">Tên đăng nhập</label>
-            <input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-              required
-            />
-          </div>
-
-          <div className="mb-6">
-            <label className="block text-gray-700 mb-2">Mật khẩu</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-              required
-            />
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4">
+      <div className="max-w-md w-full space-y-8 bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700">
+        <div>
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-primary-dark dark:text-primary">
+            Đăng nhập hệ thống
+          </h2>
+        </div>
+        <form className="mt-8 space-y-6" onSubmit={handleLogin}>
+          {error && <div className="text-red-500 text-center text-sm">{error}</div>}
+          <div className="rounded-md shadow-sm space-y-4">
+            <div>
+              <input
+                type="text"
+                required
+                className="appearance-none rounded-lg relative block w-full px-3 py-3 border border-gray-300 dark:border-gray-600 placeholder-gray-500 text-gray-900 dark:text-white dark:bg-gray-700 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                placeholder="Tên đăng nhập"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+              />
+            </div>
+            <div>
+              <input
+                type="password"
+                required
+                className="appearance-none rounded-lg relative block w-full px-3 py-3 border border-gray-300 dark:border-gray-600 placeholder-gray-500 text-gray-900 dark:text-white dark:bg-gray-700 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                placeholder="Mật khẩu"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
           </div>
 
-          <button
-            type="submit"
-            className="w-full bg-primary text-white py-3 rounded-lg hover:bg-primary-dark transition"
-          >
-            Đăng nhập
-          </button>
+          <div>
+            <button
+              type="submit"
+              className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary shadow-lg shadow-primary/30 transition-all"
+            >
+              Đăng nhập
+            </button>
+          </div>
+          <div className="text-center text-sm">
+            <span className="text-gray-500">Chưa có tài khoản? </span>
+            <Link to="/register" className="font-medium text-primary hover:text-primary-dark">
+              Đăng ký ngay
+            </Link>
+          </div>
         </form>
-
-        <p className="text-center mt-4 text-gray-600">
-          Chưa có tài khoản?{' '}
-          <a href="/register" className="text-accent hover:underline">
-            Đăng ký
-          </a>
-        </p>
       </div>
     </div>
   );
