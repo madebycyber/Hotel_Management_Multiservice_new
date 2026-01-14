@@ -1,5 +1,7 @@
 package com.example.identity_service.entity;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -22,9 +24,25 @@ public class NguoiDung {
     @Column(name = "tendaydu")
     private String tenDayDu;
 
-    @Column(name = "mavaitro")
-    private String maVaiTro;
 
     @Column(name = "trangthaitaikhoan")
     private String trangThai;
+
+    // Liên kết với bảng Phanquyen (Vai trò)
+    @ManyToOne 
+    @JoinColumn(name = "mavaitro", referencedColumnName = "mavaitro")
+    private PhanQuyen vaiTro; // Role
+
+    @Column(name = "ma_khach_hang")
+    private String maKhachHang;
+
+    @Column(name = "reset_password_token")
+    private String resetPasswordToken;
+
+    @Column(name = "token_expiry_date")
+    private LocalDateTime tokenExpiryDate;
+
+    @Column(name = "thoigiantaotaikhoan")
+    private LocalDateTime thoigiantaotaikhoan;
+
 }

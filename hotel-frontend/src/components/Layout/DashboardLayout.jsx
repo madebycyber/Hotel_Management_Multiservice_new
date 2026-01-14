@@ -1,5 +1,5 @@
 // src/components/Layout/DashboardLayout.jsx
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import {
   BuildingOffice2Icon,
@@ -8,54 +8,87 @@ import {
   CurrencyDollarIcon,
   Cog6ToothIcon,
   ArrowRightOnRectangleIcon,
-  Bars3Icon, // hamburger
+  Bars3Icon,
   SunIcon,
   MoonIcon,
+  WalletIcon,
+  Square2StackIcon,
+  LockClosedIcon,
+  BuildingOfficeIcon,
+  BriefcaseIcon,
+  CalculatorIcon,
+  UserGroupIcon,
+  UserCircleIcon, // Thêm icon cho Profile
+  HomeIcon
 } from '@heroicons/react/24/outline';
+import { useTranslation } from 'react-i18next'; // <--- 1. Import hook
 
 const menuItems = [
-  { name: 'Dashboard', icon: BuildingOffice2Icon, path: '/dashboard' },
-  { name: 'Phòng', icon: BuildingOffice2Icon, path: '/rooms' },
-  { name: 'Loại phòng', icon: CalendarIcon, path: '/room-types' },
-  { name: 'Đặt phòng', icon: CalendarIcon, path: '/bookings' },
-  { name: 'Đặt dịch vụ', icon: CalendarIcon, path: '/services' },
-  { name: 'Dịch vụ', icon: CalendarIcon, path: '/dich-vu' },
-  { name: 'Khách hàng', icon: UsersIcon, path: '/customers' },
-  { name: 'Hóa đơn', icon: CurrencyDollarIcon, path: '/invoices' },
-  { name: 'Cài đặt', icon: Cog6ToothIcon, path: '/settings' },
+  { key: 'home', icon: HomeIcon, path: '/user-experience' },
+  { key: 'dashboard', icon: Square2StackIcon, path: '/dashboard' },
+  { key: 'rooms', icon: BuildingOffice2Icon, path: '/rooms' },
+  { key: 'room_types', icon: BuildingOfficeIcon, path: '/room-types' },
+  { key: 'bookings', icon: CalendarIcon, path: '/bookings' },
+  { key: 'booking-details', icon: WalletIcon, path: '/booking-details' },
+  { key: 'services', icon: CalculatorIcon, path: '/services' },
+  { key: 'customers', icon: UsersIcon, path: '/customers' },
+  { key: 'staff', icon: BriefcaseIcon, path: '/employees' },
+  { key: 'invoices', icon: CurrencyDollarIcon, path: '/invoices' },
+  { key: 'settings', icon: Cog6ToothIcon, path: '/settings' },
+  { key: 'role_permission', icon: LockClosedIcon, path: '/role-permissions' },
+  { key: 'users', icon: UserGroupIcon, path: '/users' },
 ];
 
+
+
 export default function DashboardLayout({ children }) {
-  const [sidebarOpen, setSidebarOpen] = useState(true); // desktop default mở
+  const { t } = useTranslation();
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false); // State cho menu User
   const [theme, setTheme] = useState(localStorage.getItem('theme') || 'default');
   const navigate = useNavigate();
-  // Trong DashboardLayout.jsx
+
+  // Ref để xử lý click outside cho user menu
+  const userMenuRef = useRef(null);
+
   const [darkMode, setDarkMode] = useState(() => {
     const saved = localStorage.getItem('darkMode');
     if (saved !== null) return saved === 'true';
     return window.matchMedia('(prefers-color-scheme: dark)').matches;
- });
+  });
+
   const handleLogout = () => {
     localStorage.removeItem('token');
     navigate('/login');
   };
 
-    useEffect(() => {
+  useEffect(() => {
     if (darkMode) {
-        document.documentElement.classList.add('dark');
+      document.documentElement.classList.add('dark');
     } else {
-        document.documentElement.classList.remove('dark');
+      document.documentElement.classList.remove('dark');
     }
     localStorage.setItem('darkMode', darkMode.toString());
-    }, [darkMode]);
+  }, [darkMode]);
 
-    useEffect(() => {
+  useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('theme', theme);
-    }, [theme]);
+  }, [theme]);
 
-
+  // Xử lý click ra ngoài để đóng menu user
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
+        setUserMenuOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [userMenuRef]);
 
   return (
     <div className="flex h-screen overflow-hidden bg-gray-50 dark:bg-gray-900">
@@ -67,20 +100,20 @@ export default function DashboardLayout({ children }) {
       >
         <div className="flex items-center justify-between p-4 border-b border-primary/30">
           {sidebarOpen && (
-            <h1 className="text-xl font-bold tracking-tight">HotelHub</h1>
+            <h1 className="text-xl font-bold tracking-tight">Mambo</h1>
           )}
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
             className="p-1 rounded hover:bg-primary"
           >
-            {sidebarOpen ? <Bars3Icon className="w-6 h-6" /> : <Bars3Icon className="w-6 h-6" />}
+            <Bars3Icon className="w-6 h-6" />
           </button>
         </div>
 
         <nav className="mt-6 px-3 space-y-1">
           {menuItems.map((item) => (
             <NavLink
-              key={item.name}
+              key={item.key}
               to={item.path}
               className={({ isActive }) =>
                 `flex items-center px-3 py-3 rounded-lg transition-colors ${
@@ -91,23 +124,15 @@ export default function DashboardLayout({ children }) {
               }
             >
               <item.icon className="w-6 h-6 flex-shrink-0" />
-              {sidebarOpen && <span className="ml-3 font-medium">{item.name}</span>}
+              {sidebarOpen && <span className="ml-3 font-medium">{t(item.key)}</span>}
             </NavLink>
           ))}
         </nav>
-
-        <div className="absolute bottom-0 w-full p-4 border-primary/30">
-          <button
-            onClick={handleLogout}
-            className="flex items-center w-full px-3 py-2 text-gray-300 hover:bg-red-700/50 rounded-lg"
-          >
-            <ArrowRightOnRectangleIcon className="w-6 h-6" />
-            {sidebarOpen && <span className="ml-3">Đăng xuất</span>}
-          </button>
-        </div>
+        
+        {/* ĐÃ XÓA NÚT LOGOUT Ở ĐÂY */}
       </aside>
 
-      {/* Mobile Sidebar (overlay) */}
+      {/* Mobile Sidebar */}
       {mobileMenuOpen && (
         <div
           className="fixed inset-0 z-40 lg:hidden"
@@ -115,14 +140,13 @@ export default function DashboardLayout({ children }) {
         >
           <div className="absolute inset-0 bg-black/50" />
           <aside className="absolute top-0 left-0 h-full w-64 bg-primary-dark text-white shadow-xl transform transition-transform duration-300">
-            {/* Nội dung sidebar giống desktop */}
             <div className="p-4 border-b border-primary/30">
-              <h1 className="text-xl font-bold">HotelHub</h1>
+              <h1 className="text-xl font-bold">Mambo</h1>
             </div>
             <nav className="mt-6 px-3 space-y-1">
               {menuItems.map((item) => (
                 <NavLink
-                  key={item.name}
+                  key={item.key}
                   to={item.path}
                   className={({ isActive }) =>
                     `flex items-center px-3 py-3 rounded-lg ${
@@ -132,7 +156,7 @@ export default function DashboardLayout({ children }) {
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   <item.icon className="w-6 h-6" />
-                  <span className="ml-3">{item.name}</span>
+                  <span className="ml-3">{t(item.key)}</span>
                 </NavLink>
               ))}
             </nav>
@@ -142,7 +166,7 @@ export default function DashboardLayout({ children }) {
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
-      {/* Header */}
+        {/* Header */}
         <header className="bg-white dark:bg-gray-800 shadow-sm px-4 py-3 flex items-center justify-between relative z-30">
           <div className="flex items-center space-x-4">
             <button
@@ -152,7 +176,7 @@ export default function DashboardLayout({ children }) {
               <Bars3Icon className="w-8 h-8" />
             </button>
             <h2 className="text-xl font-semibold text-primary-dark dark:text-primary">
-              Dashboard Quản lý
+              {t('hotel_name')}
             </h2>
           </div>
 
@@ -170,7 +194,7 @@ export default function DashboardLayout({ children }) {
               )}
             </button>
 
-            {/* Theme Selector Dropdown - ĐÃ SỬA LỖI */}
+            {/* Theme Selector */}
             <div className="relative group h-full flex items-center">
               <button className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                 <div
@@ -182,16 +206,10 @@ export default function DashboardLayout({ children }) {
                 </span>
               </button>
 
-              {/* Dropdown menu */}
               <div className="absolute right-0 top-full mt-2 w-64 bg-white dark:bg-gray-800 shadow-xl rounded-xl border border-gray-200 dark:border-gray-700 
                               invisible opacity-0 group-hover:visible group-hover:opacity-100 
                               transition-all duration-200 transform origin-top-right z-50
                               before:content-[''] before:absolute before:-top-4 before:left-0 before:w-full before:h-4 before:bg-transparent">
-                {/* Giải thích fix:
-                   1. top-full: Căn menu ngay dưới đáy của cha.
-                   2. invisible/visible: Tránh click nhầm khi ẩn.
-                   3. before:... : Tạo một lớp trong suốt cao 4 unit ở phía trên menu để lấp khoảng trống margin, giúp chuột không bị mất focus khi rê xuống.
-                */}
                 <div className="py-2 max-h-[80vh] overflow-y-auto">
                   {[
                     { name: 'default', label: 'Teal Luxury', color: '#0F766E' },
@@ -223,17 +241,58 @@ export default function DashboardLayout({ children }) {
               </div>
             </div>
 
-            <div className="flex items-center gap-2 border-l pl-4 border-gray-300 dark:border-gray-600">
-                 <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white font-bold">
-                    A
+            {/* USER DROPDOWN (NEW) */}
+            <div className="relative" ref={userMenuRef}>
+              <button 
+                onClick={() => setUserMenuOpen(!userMenuOpen)}
+                className="flex items-center gap-2 border-l pl-4 border-gray-300 dark:border-gray-600 hover:opacity-80 transition-opacity"
+              >
+                 <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white font-bold shadow-md">
+                   A
                  </div>
                  <span className="text-gray-700 dark:text-gray-300 font-medium hidden sm:block">Admin</span>
+              </button>
+
+              {/* Menu Content */}
+              {userMenuOpen && (
+                <div className="absolute right-0 top-full mt-3 w-56 bg-white dark:bg-gray-800 shadow-xl rounded-xl border border-gray-200 dark:border-gray-700 py-2 z-50 transform origin-top-right transition-all animate-in fade-in slide-in-from-top-2">
+                  <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700 mb-1">
+                    <p className="text-sm font-semibold text-gray-800 dark:text-white">Admin User</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 truncate">admin@hotelhub.com</p>
+                  </div>
+
+                  <NavLink
+                    to="/profile"
+                    onClick={() => setUserMenuOpen(false)}
+                    className="flex items-center px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                  >
+                    <UserCircleIcon className="w-5 h-5 mr-3 text-gray-400" />
+                    Hồ sơ cá nhân
+                  </NavLink>
+
+                  <div className="my-1 border-t border-gray-100 dark:border-gray-700"></div>
+
+                  <button
+                    onClick={() => {
+                        setUserMenuOpen(false);
+                        handleLogout();
+                    }}
+                    className="flex w-full items-center px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                  >
+                    <ArrowRightOnRectangleIcon className="w-5 h-5 mr-3" />
+                    Đăng xuất
+                  </button>
+                </div>
+              )}
             </div>
+
           </div>
         </header>
 
         {/* Content */}
-        <main className="bg-white dark:bg-gray-800 p-6 shadow-lg border border-gray-200 dark:border-gray-700">{children}</main>
+        <main className="bg-white dark:bg-gray-800 p-6 shadow-lg border border-gray-200 dark:border-gray-700 flex-1 overflow-auto">
+            {children}
+        </main>
       </div>
     </div>
   );

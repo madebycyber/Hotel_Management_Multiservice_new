@@ -18,4 +18,8 @@ public class DichVu {
     
     @Column(name = "\"DONGIA\"")
     private BigDecimal donGia;
+
+    public int getGiaTien() {
+        return donGia.intValue();
+    }
 }

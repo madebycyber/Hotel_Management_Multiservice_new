@@ -10,6 +10,16 @@ import Invoices from './pages/Invoices';     // ví dụ trang Hóa đơn
 import Settings from './pages/Settings';     // ví dụ trang Cài đặt
 import Services from './pages/Services';
 import LoaiPhong from './pages/LoaiPhong';
+import BookingDetails from './pages/BookingDetails';
+import Employees from './pages/Employees';
+import UserExperience from './pages/UserExperience';
+import UserRoomList from './pages/UserRoomList';
+import BookingFlow from './pages/BookingFlow';
+import PaymentMockup from './pages/PaymentMockup';
+import UserProfile from './pages/UserProfile';
+import RolePermissionConfig from './pages/RolePermissionConfig';
+import ForbiddenPage from './pages/ForbiddenPage';
+import Users from './pages/Users';
 
 import DashboardLayout from './components/Layout/DashboardLayout';
 
@@ -84,11 +94,68 @@ function App() {
         />
 
         <Route
+          path="/employees"
+          element={
+            <PrivateRoute>
+              <DashboardLayout>
+                <Employees />
+              </DashboardLayout>
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/role-permissions"
+          element={
+            <PrivateRoute>
+              <DashboardLayout>
+                <RolePermissionConfig />
+              </DashboardLayout>
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/profile"
+          element={
+            <PrivateRoute>
+              <DashboardLayout>
+                <UserProfile />
+              </DashboardLayout>
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/users"
+          element={
+            <PrivateRoute>
+              <DashboardLayout>
+                <Users />
+              </DashboardLayout>
+            </PrivateRoute>
+          }
+        />
+
+        <Route
           path="/invoices"
           element={
             <PrivateRoute>
               <DashboardLayout>
                 <Invoices />
+              </DashboardLayout>
+            </PrivateRoute>
+          }
+        />
+
+        <Route path="/403" element={<ForbiddenPage />} />
+
+        <Route
+          path="/booking-details"
+          element={
+            <PrivateRoute>
+              <DashboardLayout>
+                <BookingDetails />
               </DashboardLayout>
             </PrivateRoute>
           }
@@ -116,9 +183,53 @@ function App() {
           }
         />
 
+        <Route
+          path="/user-experience"
+          element={
+            <PrivateRoute>
+              <DashboardLayout>
+                <UserExperience />
+              </DashboardLayout>
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/user-rooms"
+          element={
+            <PrivateRoute>
+              <DashboardLayout>
+                <UserRoomList />
+              </DashboardLayout>
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/booking-flow"
+          element={
+            <PrivateRoute>
+              <DashboardLayout>
+                <BookingFlow />
+              </DashboardLayout>
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/payment-mockup"
+          element={
+            <PrivateRoute>
+              <DashboardLayout>
+                <PaymentMockup />
+              </DashboardLayout>
+            </PrivateRoute>
+          }
+        />
+
         {/* Redirect mặc định */}
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
-        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/" element={<Navigate to="/user-experience" replace />} />
+        <Route path="*" element={<Navigate to="/user-experience" replace />} />
       </Routes>
     </BrowserRouter>
   );

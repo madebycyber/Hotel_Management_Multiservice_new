@@ -8,6 +8,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 
 // Import JPA config (Giữ nguyên như lần trước để đảm bảo Repo hoạt động)
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 @SpringBootApplication
@@ -16,6 +17,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 // --- SỬA DÒNG NÀY ---
 // Chỉ định rõ thư mục chứa RoomClient để Spring tìm thấy nó
 @EnableFeignClients(basePackages = "com.example.booking_service.client") 
+@EnableScheduling
 // --------------------
 
 @EnableJpaRepositories(basePackages = "com.example.booking_service.repository")

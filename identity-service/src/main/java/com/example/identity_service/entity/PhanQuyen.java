@@ -4,13 +4,13 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
-@Table(name = "\"PHANQUYEN\"")
+@Table(name = "phanquyen")
 @Data
 public class PhanQuyen {
     @Id
-    @Column(name = "\"MAVAITRO\"", insertable = false, updatable = false)
+    @Column(name = "mavaitro", insertable = false, updatable = false)
     private String maVaiTro;
 
-    @Column(name = "\"TENVAITRO\"")
+    @Column(name = "tenvaitro")
     private String tenVaiTro;
 }
