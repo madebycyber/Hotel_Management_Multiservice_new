@@ -20,6 +20,8 @@ import UserProfile from './pages/UserProfile';
 import RolePermissionConfig from './pages/RolePermissionConfig';
 import ForbiddenPage from './pages/ForbiddenPage';
 import Users from './pages/Users';
+import AuditLog from './pages/AuditLog';          // <--- Import Mới
+import ForgotPassword from './pages/ForgotPassword'; // <--- Import Mới
 
 import DashboardLayout from './components/Layout/DashboardLayout';
 
@@ -36,6 +38,7 @@ function App() {
         {/* Trang công khai - không dùng layout */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} /> {/* <--- Route Mới */}
 
         {/* Tất cả các trang bảo vệ đều dùng DashboardLayout */}
         <Route
@@ -110,6 +113,17 @@ function App() {
             <PrivateRoute>
               <DashboardLayout>
                 <RolePermissionConfig />
+              </DashboardLayout>
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/audit-log"
+          element={
+            <PrivateRoute>
+              <DashboardLayout>
+                <AuditLog />
               </DashboardLayout>
             </PrivateRoute>
           }

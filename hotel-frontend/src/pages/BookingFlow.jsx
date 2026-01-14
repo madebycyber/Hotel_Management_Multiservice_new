@@ -84,7 +84,7 @@ export default function BookingFlow({ room, services, onComplete }) {
                     <CreditCard />
                     </div>
                     <div>
-                    <h4 className="font-bold text-gray-800">{s.tenDichVu}</h4>
+                    <h4 className="font-bold text-gray-500">{s.tenDichVu}</h4>
                     <p className="text-sm text-primary font-medium">{s.giaTien.toLocaleString()}đ</p>
                     </div>
                 </div>
@@ -154,19 +154,19 @@ export default function BookingFlow({ room, services, onComplete }) {
           <h2 className="text-2xl font-black text-center">Thông tin đặt chỗ</h2>
           <div className="space-y-4">
              <div className="relative">
-                <User className="absolute left-4 top-4 text-gray-400" size={20}/>
-                <input className="text-gray-600 dark:text-gray-400" placeholder="Họ và tên khách hàng" 
+                <User className="absolute text-gray-400" size={20}/>
+                <input className="mx-8 text-gray-600 dark:text-gray-400" placeholder="Họ và tên khách hàng" 
                    onChange={e => setBookingData({...bookingData, tenKh: e.target.value})}/>
              </div>
              <div className="grid grid-cols-2 gap-4">
                 <div className="relative">
-                  <Phone className="absolute left-4 top-4 text-gray-400" size={20}/>
-                  <input className="text-gray-600 dark:text-gray-400" placeholder="Số điện thoại"
+                  <Phone className="absolute text-gray-400" size={20}/>
+                  <input className="mx-8 text-gray-600 dark:text-gray-400" placeholder="Số điện thoại"
                     onChange={e => setBookingData({...bookingData, sdt: e.target.value})}/>
                 </div>
                 <div className="relative">
-                  <Mail className="absolute left-4 top-4 text-gray-400" size={20}/>
-                  <input className="text-gray-600 dark:text-gray-400" placeholder="Email (nếu có)"
+                  <Mail className="absolute text-gray-400" size={20}/>
+                  <input className="mx-8 text-gray-600 dark:text-gray-400" placeholder="Email (nếu có)"
                     onChange={e => setBookingData({...bookingData, email: e.target.value})}/>
                 </div>
              </div>

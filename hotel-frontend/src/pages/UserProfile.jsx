@@ -20,7 +20,7 @@ export default function UserProfile() {
                     <User size={48} />
                 </div>
                 <div>
-                    <h1 className="text-3xl font-black text-gray-800">{profile.tenDayDu}</h1>
+                    <h1 className="text-3xl font-bold text-primary-dark dark:text-primary">{profile.tenDayDu}</h1>
                     <p className="text-gray-500">@{profile.tenDangNhap}</p>
                 </div>
             </div>

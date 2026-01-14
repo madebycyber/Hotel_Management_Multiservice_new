@@ -1,7 +1,11 @@
 package com.example.booking_service.controller;
 
 import com.example.booking_service.entity.NhanVien;
+import com.example.booking_service.aop.LogAudit;
 import com.example.booking_service.repository.NhanVienRepository;
+
+import lombok.extern.java.Log;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -37,6 +41,7 @@ public class NhanVienController {
 
     // Thêm nhân viên
     @PostMapping
+    @LogAudit(action = "CREATE_EMPLOYEE", description = "Tạo mới nhân viên")
     public ResponseEntity<?> create(@RequestBody NhanVien nv) {
         if (nv.getMaNv() == null || nv.getMaNv().isEmpty()) {
             Long nextVal = jdbcTemplate.queryForObject("SELECT nextval('seq_nhanvien_ma')", Long.class);
@@ -47,6 +52,7 @@ public class NhanVienController {
 
     // Sửa nhân viên
     @PutMapping("/{id}")
+    @LogAudit(action = "UPDATE_EMPLOYEE", description = "Cập nhật thông tin nhân viên")
     public ResponseEntity<?> update(@PathVariable String id, @RequestBody NhanVien nv) {
         if (!repo.existsById(id)) return ResponseEntity.notFound().build();
         nv.setMaNv(id);
@@ -55,6 +61,7 @@ public class NhanVienController {
 
     // Xóa nhân viên
     @DeleteMapping("/{id}")
+    @LogAudit(action = "DELETE_EMPLOYEE", description = "Xóa nhân viên")
     public ResponseEntity<?> delete(@PathVariable String id) {
         try {
             repo.deleteById(id);

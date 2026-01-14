@@ -1,5 +1,6 @@
 package com.example.identity_service.controller;
 
+import com.example.identity_service.aop.LogAudit;
 import com.example.identity_service.dto.AuthRequest;
 import com.example.identity_service.dto.CreateUserDTO;
 import com.example.identity_service.dto.UserProfileDTO;
@@ -38,6 +39,7 @@ public class AuthController {
     @Autowired private JdbcTemplate jdbcTemplate;         
 
     // 1. Đăng ký (Logic cơ bản)
+    @LogAudit(action = "REGISTER", description = "Đăng ký tài khoản mới")
     @PostMapping("/register")
     public String addNewUser(@RequestBody AuthRequest request) {
         return service.saveUser(request);
@@ -46,6 +48,7 @@ public class AuthController {
     // AuthController.java
 
     @PostMapping("/login")
+    @LogAudit(action = "LOGIN", description = "Đăng nhập hệ thống")
     // Đổi kiểu trả về từ String sang ResponseEntity<?>
     public ResponseEntity<?> getToken(@RequestBody AuthRequest request) {
         Authentication authenticate = authenticationManager.authenticate(
@@ -64,6 +67,7 @@ public class AuthController {
 
     // 3. Tạo User (Admin) - Có gán Role và Khách hàng
     @PostMapping("/create")
+    @LogAudit(action = "CREATE_USER", description = "Tạo người dùng mới")
     // @PreAuthorize("hasAuthority('MANAGE_USERS')") 
     public ResponseEntity<?> createUser(@RequestBody CreateUserDTO dto) {
         try {
@@ -114,6 +118,7 @@ public class AuthController {
     }
 
     // 4. Quên mật khẩu (Trả Token trực tiếp - Không dùng Email)
+    @LogAudit(action = "FORGOT_PASSWORD", description = "Yêu cầu đặt lại mật khẩu")
     @PostMapping("/forgot-password-direct")
     public ResponseEntity<?> forgotPasswordDirect(@RequestParam String username) {
         // Tìm user theo username
@@ -136,6 +141,7 @@ public class AuthController {
 
     // 5. Lấy thông tin cá nhân (Profile)
     @GetMapping("/profile")
+    @LogAudit(action = "VIEW_PROFILE", description = "Xem thông tin cá nhân")
     public ResponseEntity<?> getProfile() {
         String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
         

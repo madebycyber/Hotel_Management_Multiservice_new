@@ -20,6 +20,7 @@
     "services": "Dich vụ",
     "invoices": "Hóa đơn",
     "hotel_name": "Quản Lý Khách Sạn Mambo",
+    "audit_log": "Nhật ký hệ thống",
     "common": {
     "add_new": "+ Thêm mới",
     "search": "Tìm kiếm...",

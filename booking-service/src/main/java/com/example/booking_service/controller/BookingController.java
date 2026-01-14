@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import com.example.booking_service.aop.LogAudit;
 import com.example.booking_service.dto.BookingRequestDTO;
 import com.example.booking_service.dto.ServiceDTO;
 import com.example.booking_service.entity.ChiTietDatPhong;
@@ -41,6 +43,7 @@ public class BookingController {
 
     // Trong BookingController.java
     @PostMapping("/{id}/services")
+    @LogAudit(action = "ADD_SERVICE", description = "Thêm dịch vụ vào đặt phòng")
     public ResponseEntity<?> addServiceToBooking(@PathVariable String id, @RequestBody ServiceDTO serviceDTO) {
         try {
             service.addServiceToBooking(id, serviceDTO);
@@ -51,6 +54,7 @@ public class BookingController {
     }
 
     @GetMapping("/invoice/{bookingId}")
+    @LogAudit(action = "GENERATE_INVOICE", description = "Tạo hóa đơn cho đặt phòng")
     public ResponseEntity<?> generateInvoice(@PathVariable String bookingId) {
         try {
             return ResponseEntity.ok(service.generateInvoice(bookingId));

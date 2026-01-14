@@ -36,6 +36,7 @@ public class AuthConfig {
             .authorizeHttpRequests(auth -> auth
                 // Cho phép các API Auth cơ bản
                 .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/internal/**").permitAll()
                 // Tất cả các request khác cứ cho qua Authentication, 
                 // DynamicPermissionFilter sẽ chặn ở bước sau
                 .anyRequest().authenticated() 

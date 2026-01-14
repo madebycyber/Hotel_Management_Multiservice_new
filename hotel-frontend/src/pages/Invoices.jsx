@@ -3,9 +3,13 @@ import React, { useState, useEffect } from 'react';
 import DataTable from '../components/Shared/DataTable';
 import Pagination from '../components/Shared/Pagination'; // <--- Import mới
 import axiosClient from '../api/axiosClient';
+import { useTranslation } from 'react-i18next';
+import { useFormatter } from '../hooks/useFormatter';
 
 export default function Invoices() {
-  // ... (Giữ nguyên các state và hàm fetchInvoices cũ của bạn) ...
+
+  const { t } = useTranslation(); 
+  const { formatDate, formatCurrency } = useFormatter();
   const [invoices, setInvoices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -35,9 +39,9 @@ export default function Invoices() {
       // ... code cột cũ của bạn ...
       { header: 'Mã HĐ', accessor: 'maHd', render: (row) => <span className="font-mono font-bold text-gray-700 dark:text-gray-300">{row.maHd}</span> },
       { header: 'Booking', accessor: 'phieuDatPhong', render: (row) => <span className="text-primary font-medium">#{row.phieuDatPhong?.maDatPhong}</span> },
-      { header: 'Ngày TT', accessor: 'ngayTT', render: (row) => new Date(row.ngayTT).toLocaleString('vi-VN') },
+      { header: 'Ngày TT', accessor: 'ngayTT', render: (row) => formatDate(row.ngayTT) },
       { header: 'Hình Thức', accessor: 'hinhThucTT' },
-      { header: 'Số Tiền', accessor: 'soTienTT', render: (row) => <span className="text-lg font-bold text-green-600">{row.soTienTT?.toLocaleString()} đ</span> },
+      { header: 'Số Tiền', accessor: 'soTienTT', render: (row) => <span className="text-lg font-bold text-green-600">{formatCurrency(row.soTienTT)}</span> },
       { header: 'NV Thực hiện', accessor: 'maNV' },
       { header: 'Trạng Thái', accessor: 'trangThaiTT', render: (row) => (<span className={`px-2 py-1 rounded text-xs font-bold ${row.trangThaiTT === 'Paid' ? 'bg-green-100 text-green-700' : 'bg-gray-100'}`}>{row.trangThaiTT}</span>) }
   ];

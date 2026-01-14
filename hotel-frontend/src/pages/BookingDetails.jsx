@@ -1,7 +1,7 @@
 // src/pages/BookingDetails.jsx
 import React, { useState, useEffect } from 'react';
 import DataTable from '../components/Shared/DataTable';
-import Pagination from '../components/Shared/Pagination'; // <--- Import
+import Pagination from '../components/Shared/Pagination';
 import axiosClient from '../api/axiosClient';
 
 export default function BookingDetails() {
@@ -13,7 +13,7 @@ export default function BookingDetails() {
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 5; // Số dòng mỗi trang
 
-  // State Modal "Order Dịch Vụ" (Giữ nguyên)
+  // State Modal "Order Dịch Vụ"
   const [showOrderModal, setShowOrderModal] = useState(false);
   const [order, setOrder] = useState({ maDatPhong: '', maDichVu: '', soLuong: 1 });
 
@@ -29,6 +29,7 @@ export default function BookingDetails() {
           axiosClient.get('/api/dich-vu?size=100')
       ]);
       
+      // Lọc các booking đang ở trạng thái 'Đã đặt' (Active)
       const active = resBookings.data.content.filter(b => b.trangThai === 'Đã đặt');
       setActiveBookings(active);
       setServices(resServices.data.content || resServices.data);
@@ -41,10 +42,37 @@ export default function BookingDetails() {
   const currentItems = activeBookings.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(activeBookings.length / ITEMS_PER_PAGE);
 
-  // ... (Hàm handleAddService giữ nguyên) ...
-  const handleAddService = async () => { /* Code cũ của bạn */ };
+  // --- HÀM BỔ SUNG: XỬ LÝ THÊM DỊCH VỤ ---
+  const handleAddService = async () => {
+      // 1. Validate dữ liệu
+      if (!order.maDatPhong || !order.maDichVu) {
+          alert("Vui lòng chọn phòng và dịch vụ!");
+          return;
+      }
+      if (order.soLuong < 1) {
+          alert("Số lượng phải lớn hơn 0!");
+          return;
+      }
 
-  // ... (Columns giữ nguyên) ...
+      try {
+          // 2. Gọi API thêm dịch vụ (Lưu ý: Endpoint này phải khớp với Backend BookingController)
+          await axiosClient.post(`/api/bookings/${order.maDatPhong}/services`, {
+              maDichVu: order.maDichVu,
+              soLuong: parseInt(order.soLuong)
+          });
+          
+          // 3. Thông báo & Reset form
+          alert("Thêm dịch vụ thành công!");
+          setShowOrderModal(false);
+          setOrder({ maDatPhong: '', maDichVu: '', soLuong: 1 });
+          
+      } catch (e) {
+          console.error(e);
+          // Hiển thị lỗi từ backend trả về nếu có
+          alert("Lỗi: " + (e.response?.data || e.message));
+      }
+  };
+
   const columns = [
     { header: 'Mã Booking', accessor: 'maDatPhong', render: (row) => <span className="font-mono font-bold">#{row.maDatPhong}</span> },
     { header: 'Phòng', accessor: 'maPhong', render: (row) => <span className="text-lg font-bold text-primary">P.{row.maPhong}</span> },
@@ -54,7 +82,7 @@ export default function BookingDetails() {
 
   return (
     <div className="space-y-6 pb-10 overflow-y-auto h-full p-2 sm:p-4">
-      {/* Header (Giữ nguyên) */}
+      {/* Header */}
       <div className="flex justify-between items-center bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700">
         <div>
           <h1 className="text-3xl font-bold text-primary-dark dark:text-primary">Gọi Dịch Vụ / Room Service</h1>
@@ -68,7 +96,6 @@ export default function BookingDetails() {
       <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 mt-6">
         <h3 className="mb-4 font-semibold dark:text-gray-300">Danh sách phòng đang ở ({activeBookings.length})</h3>
         
-        {/* Truyền currentItems (đã cắt) vào DataTable thay vì activeBookings */}
         <DataTable 
             columns={columns} 
             data={currentItems} 
@@ -83,7 +110,7 @@ export default function BookingDetails() {
             )}
         />
 
-        {/* --- THÊM PHÂN TRANG CLIENT SIDE --- */}
+        {/* Phân trang */}
         <div className="mt-4 border-t pt-4 border-gray-100 dark:border-gray-700">
              <Pagination 
                 currentPage={currentPage} 

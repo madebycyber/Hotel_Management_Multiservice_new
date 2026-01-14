@@ -52,7 +52,7 @@ spring:
         - id: identity-service
           uri: lb://IDENTITY-SERVICE
           predicates:
-            - Path=/api/auth/**, /api/users/**, /api/permissions/**, /api/roles/**, /api/admin/**
+            - Path=/api/auth/**, /api/users/**, /api/permissions/**, /api/roles/**, /api/admin/**, /api/internal/**
 
         - id: room-service-images
           uri: lb://ROOM-SERVICE  # Chuyển về Room Service

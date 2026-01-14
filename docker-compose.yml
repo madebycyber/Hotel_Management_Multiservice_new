@@ -1,0 +1,104 @@
+version: '3.8'
+
+services:
+  # --- 1. DATABASE ---
+  postgres:
+    image: postgres:15-alpine
+    container_name: hotel-postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql # Script tạo 3 DB
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - hotel-network
+
+  # --- 2. EUREKA SERVER (Discovery) ---
+  eureka-server:
+    build: ./discovery-server # Đường dẫn tới folder code
+    container_name: hotel-eureka
+    ports:
+      - "8761:8761"
+    networks:
+      - hotel-network
+    depends_on:
+      - postgres
+
+  # --- 3. API GATEWAY ---
+  api-gateway:
+    build: ./api-gateway
+    container_name: hotel-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    networks:
+      - hotel-network
+    depends_on:
+      - eureka-server
+
+  # --- 4. IDENTITY SERVICE ---
+  identity-service:
+    build: ./identity-service
+    container_name: hotel-identity
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/identity_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=password
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    networks:
+      - hotel-network
+    depends_on:
+      - postgres
+      - eureka-server
+
+  # --- 5. ROOM SERVICE ---
+  room-service:
+    build: ./room-service
+    container_name: hotel-room
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/room_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=password
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    networks:
+      - hotel-network
+    depends_on:
+      - postgres
+      - eureka-server
+
+  # --- 6. BOOKING SERVICE ---
+  booking-service:
+    build: ./booking-service
+    container_name: hotel-booking
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/booking_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=password
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    networks:
+      - hotel-network
+    depends_on:
+      - postgres
+      - eureka-server
+
+  # --- 7. FRONTEND ---
+  frontend:
+    build: ./hotel-frontend # Đường dẫn tới folder react
+    container_name: hotel-frontend
+    ports:
+      - "80:80" # Chạy ở port 80 (localhost)
+    networks:
+      - hotel-network
+    depends_on:
+      - api-gateway
+
+volumes:
+  postgres_data:
+
+networks:
+  hotel-network:
+    driver: bridge
