@@ -5,42 +5,23 @@ import axiosClient from '../api/axiosClient';
 export default function LoaiPhong() {
   const [types, setTypes] = useState([]);
   const [loading, setLoading] = useState(true);
-  
-  // --- STATE PHÂN TRANG ---
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(0);
-  const [totalElements, setTotalElements] = useState(0);
-  const pageSize = 10;
-
-  // State form & Modal
   const [showModal, setShowModal] = useState(false);
+  
+  // State form
   const [formData, setFormData] = useState({ tenLoaiPhong: '', gia: '' });
 
-  // 1. Gọi API khi trang thay đổi
   useEffect(() => {
-    fetchTypes(currentPage);
-  }, [currentPage]);
+    fetchTypes();
+  }, []);
 
-  const fetchTypes = async (page) => {
+  const fetchTypes = async () => {
     try {
-      setLoading(true);
-      // Gọi API phân trang: Backend (0-based) vs Frontend (1-based)
-      const res = await axiosClient.get(`/api/loai-phong?page=${page - 1}&size=${pageSize}`);
-      
-      // Cập nhật state từ Page object của Spring
-      setTypes(res.data.content);
-      setTotalPages(res.data.totalPages);
-      setTotalElements(res.data.totalElements);
+      const res = await axiosClient.get('/api/loai-phong');
+      setTypes(res.data);
     } catch (error) {
       console.error("Lỗi tải loại phòng:", error);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handlePageChange = (newPage) => {
-    if (newPage >= 1 && newPage <= totalPages) {
-      setCurrentPage(newPage);
     }
   };
 
@@ -51,20 +32,14 @@ export default function LoaiPhong() {
     }
 
     try {
+      // POST /api/loai-phong
       await axiosClient.post('/api/loai-phong', {
           ...formData,
-          gia: parseFloat(formData.gia)
+          gia: parseFloat(formData.gia) // Đảm bảo gửi số lên backend
       });
       setShowModal(false);
       setFormData({ tenLoaiPhong: '', gia: '' });
-      
-      // Load lại trang 1 sau khi thêm mới
-      if (currentPage === 1) {
-          fetchTypes(1);
-      } else {
-          setCurrentPage(1);
-      }
-      
+      fetchTypes();
       alert("Thêm loại phòng thành công!");
     } catch (error) {
       console.error(error);
@@ -79,76 +54,30 @@ export default function LoaiPhong() {
   ];
 
   return (
-    <div className="space-y-6 pb-10 overflow-y-auto h-full p-2 sm:p-4">
+    <div className="space-y-6 dashboard-container h-full overflow-y-auto p-4 sm:p-6">
       <div className="flex justify-between items-center bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700">
         <div>
-          <h1 className="text-3xl font-bold text-primary-dark dark:text-primary">Cấu hình Loại Phòng</h1>
-          <p className="text-gray-600 dark:text-gray-400">Danh sách ({totalElements} loại phòng)</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Cấu hình Loại Phòng</h1>
+          <p className="text-gray-500 dark:text-gray-400">Thiết lập giá và tên các hạng phòng</p>
         </div>
         <button 
           onClick={() => setShowModal(true)}
-          className="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg shadow-lg shadow-primary/30 transition-all"
+          className="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg shadow-lg shadow-primary/30"
         >
           + Thêm loại mới
         </button>
       </div>
 
-      <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 flex flex-col justify-between min-h-[500px]">
-        {/* Table */}
+      <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700">
         <DataTable columns={columns} data={types} loading={loading} />
-
-        {/* UI Phân trang Server-side */}
-        {!loading && totalPages > 1 && (
-          <div className="flex items-center justify-between border-t border-gray-200 dark:border-gray-700 pt-4 mt-4">
-            <div className="text-sm text-gray-500 dark:text-gray-400">
-              Trang {currentPage} / {totalPages}
-            </div>
-            
-            <div className="flex gap-1">
-              <button
-                onClick={() => handlePageChange(currentPage - 1)}
-                disabled={currentPage === 1}
-                className="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded-md text-sm hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                 Trước
-              </button>
-              
-              {/* Hiển thị số trang */}
-              {Array.from({ length: totalPages }, (_, i) => i + 1)
-                .filter(page => Math.abs(page - currentPage) <= 2 || page === 1 || page === totalPages) 
-                .map((page, index, array) => (
-                  <React.Fragment key={page}>
-                    {index > 0 && array[index - 1] !== page - 1 && <span className="px-2 text-gray-400">...</span>}
-                    <button
-                        onClick={() => handlePageChange(page)}
-                        className={`px-3 py-1 border rounded-md text-sm transition-colors ${
-                        currentPage === page
-                            ? 'bg-primary text-white border-primary'
-                            : 'border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300'
-                        }`}
-                    >
-                        {page}
-                    </button>
-                  </React.Fragment>
-              ))}
-
-              <button
-                onClick={() => handlePageChange(currentPage + 1)}
-                disabled={currentPage === totalPages}
-                className="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded-md text-sm hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Sau
-              </button>
-            </div>
-          </div>
-        )}
       </div>
 
-      {/* Modal Thêm Loại Phòng (Giữ nguyên như cũ) */}
+      {/* Modal Thêm Loại Phòng */}
       {showModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
            <div className="bg-white dark:bg-gray-800 p-6 rounded-xl w-full max-w-sm space-y-4 shadow-2xl border border-gray-200 dark:border-gray-700">
               <h3 className="text-xl font-bold text-gray-900 dark:text-white">Loại phòng mới</h3>
+              
               <div className="space-y-3">
                   <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tên loại phòng</label>
@@ -159,6 +88,7 @@ export default function LoaiPhong() {
                         onChange={(e) => setFormData({...formData, tenLoaiPhong: e.target.value})}
                       />
                   </div>
+
                   <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Giá mỗi đêm (VNĐ)</label>
                       <input 
@@ -170,9 +100,20 @@ export default function LoaiPhong() {
                       />
                   </div>
               </div>
+
               <div className="flex justify-end gap-3 mt-6">
-                 <button onClick={() => setShowModal(false)} className="px-4 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">Hủy</button>
-                 <button onClick={handleSubmit} className="px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-lg shadow-md">Lưu lại</button>
+                 <button 
+                    onClick={() => setShowModal(false)} 
+                    className="px-4 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+                 >
+                    Hủy
+                 </button>
+                 <button 
+                    onClick={handleSubmit} 
+                    className="px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-lg shadow-md"
+                 >
+                    Lưu lại
+                 </button>
               </div>
            </div>
         </div>

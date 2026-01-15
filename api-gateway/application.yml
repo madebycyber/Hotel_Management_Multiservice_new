@@ -2,15 +2,6 @@ server:
   port: 8080
 
 spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5432/hotel_db
-    username: postgres
-    password: Admin1234
-    driver-class-name: org.postgresql.Driver
-  jpa:
-    hibernate:
-      ddl-auto: none # Chỉ đọc, không sửa DB
-    show-sql: true
   application:
     name: api-gateway
   cloud:
@@ -40,29 +31,20 @@ spring:
         - id: room-service
           uri: lb://ROOM-SERVICE
           predicates:
-            - Path=/api/rooms/**, /api/loai-phong/**, /api/dich-vu/**, /api/services/**
+            - Path=/api/rooms/**, /api/dich-vu/**, /api/loai-phong/**
 
         # 2. Booking Service
         - id: booking-service
           uri: lb://BOOKING-SERVICE
           predicates:
-            - Path=/api/bookings/**, /api/services/**, /api/customers/**, /api/employees/**, /api/invoices/**, /api/user/bookings/**
+            - Path=/api/bookings/**, /api/services/**
 
         # 3. Identity Service
         - id: identity-service
           uri: lb://IDENTITY-SERVICE
           predicates:
-            - Path=/api/auth/**, /api/users/**, /api/permissions/**, /api/roles/**, /api/admin/**
+            - Path=/api/auth/**
 
-        - id: room-service-images
-          uri: lb://ROOM-SERVICE  # Chuyển về Room Service
-          predicates:
-            - Path=/images/** # Bắt tất cả request bắt đầu bằng /images/
-
-  servlet:  
-    multipart:
-      max-file-size: 10MB
-      max-request-size: 10MB
 eureka:
   client:
     service-url:

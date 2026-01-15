@@ -1,6 +1,5 @@
 package com.example.room_service.repository;
-import java.util.*;
-
+import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -13,7 +12,5 @@ public interface PhongRepository extends JpaRepository<Phong, String> {
     long countByTrangThai(String trangThai);
 
     List<Phong> findByLoaiPhong_MaLoaiPhong(String loaiPhongId);
-    Optional<Phong> findByMaPhongIgnoreCase(String maPhong);
-    boolean existsBySoPhong(Integer soPhong);
 }
 

@@ -23,7 +23,4 @@ public class Phong {
 
     @Column(name = "mota")
     private String moTa;
-
-    @Column(name = "image")
-    private String image; // Lưu đường dẫn ảnh
 }

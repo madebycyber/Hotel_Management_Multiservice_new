@@ -1,6 +1,5 @@
 package com.example.identity_service.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,42 +12,24 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 public class AuthConfig {
-
-    @Autowired
-    private DynamicPermissionFilter dynamicPermissionFilter;
-    @Autowired 
-    private com.example.identity_service.config.JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
     public UserDetailsService userDetailsService() {
         return new CustomUserDetailsService(); // (Xem file dưới)
     }
 
-@Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-            .csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(auth -> auth
-                // Cho phép các API Auth cơ bản
-                .requestMatchers("/api/auth/**").permitAll()
-                // Tất cả các request khác cứ cho qua Authentication, 
-                // DynamicPermissionFilter sẽ chặn ở bước sau
-                .anyRequest().authenticated() 
-            );
-
-        // Đăng ký JWT Filter trước (để xác thực User là ai)
-        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-
-        // QUAN TRỌNG: Đăng ký Dynamic Filter SAU bước xác thực
-        // Nó sẽ chạy sau khi Spring đã biết User là ai
-        //http.addFilterAfter(dynamicPermissionFilter, UsernamePasswordAuthenticationFilter.class);
-
-        return http.build();
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        return http.csrf(csrf -> csrf.disable()) // Rất quan trọng để sửa lỗi 403 khi POST
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .anyRequest().authenticated()
+                )
+                .build();
     }
 
     @Bean

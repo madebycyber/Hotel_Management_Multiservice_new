@@ -13,4 +13,8 @@ public class BookingRequestDTO {
     
     // Danh sách các dịch vụ khách chọn thêm
     private List<ServiceDTO> services; 
+
+    // --- XÓA HẾT CÁC HÀM GETTER/SETTER Ở DƯỚI ĐI ---
+    // Lombok (@Data) sẽ tự sinh code ngầm cho bạn.
+    // Việc viết đè throw UnsupportedOperationException sẽ làm hỏng code.
 }

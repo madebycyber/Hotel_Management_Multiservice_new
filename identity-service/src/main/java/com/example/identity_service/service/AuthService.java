@@ -3,7 +3,6 @@ package com.example.identity_service.service;
 import org.springframework.jdbc.core.JdbcTemplate;
 import com.example.identity_service.dto.AuthRequest;
 import com.example.identity_service.entity.NguoiDung;
-import com.example.identity_service.entity.PhanQuyen;
 import com.example.identity_service.repository.NguoiDungRepository;
 import com.example.identity_service.repository.PhanQuyenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,26 +34,15 @@ public String saveUser(AuthRequest request) {
         user.setMatKhau(passwordEncoder.encode(request.getPassword()));
         user.setTenDayDu(request.getFullName());
         user.setTrangThai("Active");
-        PhanQuyen defaultRole = roleRepo.findById("vt002")
-                .orElseThrow(() -> new RuntimeException("Lỗi hệ thống: Không tìm thấy vai trò mặc định vt002"));
-        
-        user.setVaiTro(defaultRole); // Gán đối tượng Role vào
+        user.setMaVaiTro("vt002"); // Mặc định là USER
 
         repository.save(user);
         return "Người dùng đã được đăng ký với mã: " + generatedId;
     }
 
-    // Sửa lại file AuthService.java
+    // Đăng nhập trả về Token
     public String generateToken(String username) {
-        // 1. Tìm user trong DB
-        NguoiDung user = repository.findByTenDangNhap(username)
-                .orElseThrow(() -> new RuntimeException("User không tồn tại!"));
-        
-        // 2. Lấy Role Code thật (VD: vt001)
-        // Lưu ý: Đảm bảo class NguoiDung của bạn đã map quan hệ @ManyToOne với PhanQuyen
-        String roleCode = user.getVaiTro().getMaVaiTro(); 
-
-        // 3. Cấp token với quyền thật
-        return jwtService.generateToken(username, roleCode);
+        // Mặc định lấy quyền USER cho đơn giản
+        return jwtService.generateToken(username, "USER");
     }
 }

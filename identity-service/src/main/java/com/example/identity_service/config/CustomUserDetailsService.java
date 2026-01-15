@@ -18,8 +18,6 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<NguoiDung> credential = repository.findByTenDangNhap(username);
-        
-        // Convert NguoiDung (DB) -> CustomUserDetails (Spring Security)
         return credential.map(CustomUserDetails::new)
                 .orElseThrow(() -> new UsernameNotFoundException("user not found " + username));
     }

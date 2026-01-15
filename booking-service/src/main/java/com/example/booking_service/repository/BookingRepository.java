@@ -15,7 +15,7 @@ public interface BookingRepository extends JpaRepository<PhieuDatPhong, String> 
     // Query tính tổng doanh thu theo tháng (PostgreSQL syntax)
     @Query("SELECT new com.example.booking_service.dto.RevenueDTO(TO_CHAR(b.ngayCheckOut, 'YYYY-MM'), SUM(b.tongGia)) " +
            "FROM PhieuDatPhong b " +
-           "WHERE b.trangThai = 'Đã đặt' " +
+           "WHERE b.trangThai = 'Confirmed' " +
            "GROUP BY TO_CHAR(b.ngayCheckOut, 'YYYY-MM')")
     List<RevenueDTO> getMonthlyRevenue();
 }
