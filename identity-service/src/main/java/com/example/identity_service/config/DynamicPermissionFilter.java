@@ -30,18 +30,10 @@ public class DynamicPermissionFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         String requestURI = request.getRequestURI();
-
-        // --- THÊM ĐOẠN NÀY VÀO ĐẦU HÀM ---
-        // Nếu là API nội bộ (Internal) hoặc Auth -> CHO QUA LUÔN, KHÔNG CHECK DB
-        if (requestURI.startsWith("/api/internal/") || requestURI.startsWith("/api/auth/")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
         String method = request.getMethod();
 
         // 1. Bỏ qua các API Public (Không cần check quyền)
-        if (requestURI.startsWith("/api/auth") || requestURI.startsWith("/api/public") || requestURI.startsWith("/api/internal")) {
+        if (requestURI.startsWith("/api/auth") || requestURI.startsWith("/api/public")) {
             filterChain.doFilter(request, response);
             return;
         }

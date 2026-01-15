@@ -1,7 +1,6 @@
 // src/components/Layout/DashboardLayout.jsx
 import { useState, useEffect, useRef } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { jwtDecode } from 'jwt-decode'; // <--- IMPORT QUAN TRỌNG
 import {
   BuildingOffice2Icon,
   CalendarIcon,
@@ -20,8 +19,7 @@ import {
   CalculatorIcon,
   UserGroupIcon,
   UserCircleIcon, // Thêm icon cho Profile
-  HomeIcon,
-  ShieldCheckIcon
+  HomeIcon
 } from '@heroicons/react/24/outline';
 import { useTranslation } from 'react-i18next'; // <--- 1. Import hook
 
@@ -39,7 +37,6 @@ const menuItems = [
   { key: 'settings', icon: Cog6ToothIcon, path: '/settings' },
   { key: 'role_permission', icon: LockClosedIcon, path: '/role-permissions' },
   { key: 'users', icon: UserGroupIcon, path: '/users' },
-  { key: 'audit_log', icon: ShieldCheckIcon, path: '/audit-log' }
 ];
 
 
@@ -65,44 +62,6 @@ export default function DashboardLayout({ children }) {
     localStorage.removeItem('token');
     navigate('/login');
   };
-
-  const [currentUser, setCurrentUser] = useState({
-      username: 'User',
-      role: 'Member',
-      avatar: 'U'
-  });
-
-useEffect(() => {
-    // 1. Lấy token thô từ LocalStorage
-    let token = localStorage.getItem('token');
-    
-    if (token) {
-        try {
-            // 2. [QUAN TRỌNG] Loại bỏ chữ "Bearer " nếu lỡ lưu vào
-            // Nhiều khi backend trả về "Bearer eyJ...", jwt-decode sẽ lỗi nếu không cắt đi
-            if (token.startsWith('Bearer ')) {
-                token = token.slice(7); 
-            }
-
-            // 3. Giải mã
-            const decoded = jwtDecode(token);
-            console.log("Decoded Token:", decoded); // Debug xem nội dung token
-
-            const username = decoded.sub || decoded.username || 'User'; // Thử nhiều trường khác nhau
-            
-            setCurrentUser({
-                username: username,
-                role: decoded.scope || 'Member',
-                avatar: username.charAt(0).toUpperCase()
-            });
-
-        } catch (error) {
-            console.error("Lỗi giải mã token:", error);
-            // Nếu token rác/hết hạn -> Xóa đi để tránh lỗi lần sau
-            // localStorage.removeItem('token'); 
-        }
-    }
-}, []);
 
   useEffect(() => {
     if (darkMode) {
@@ -130,7 +89,6 @@ useEffect(() => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [userMenuRef]);
-
 
   return (
     <div className="flex h-screen overflow-hidden bg-gray-50 dark:bg-gray-900">
@@ -289,18 +247,18 @@ useEffect(() => {
                 onClick={() => setUserMenuOpen(!userMenuOpen)}
                 className="flex items-center gap-2 border-l pl-4 border-gray-300 dark:border-gray-600 hover:opacity-80 transition-opacity"
               >
-                  <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-white font-bold shadow-lg">
-                      {currentUser.avatar}
-                  </div>
-                 <span className="text-gray-700 dark:text-gray-300 font-medium hidden sm:block"></span>
+                 <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white font-bold shadow-md">
+                   A
+                 </div>
+                 <span className="text-gray-700 dark:text-gray-300 font-medium hidden sm:block">Admin</span>
               </button>
 
               {/* Menu Content */}
               {userMenuOpen && (
                 <div className="absolute right-0 top-full mt-3 w-56 bg-white dark:bg-gray-800 shadow-xl rounded-xl border border-gray-200 dark:border-gray-700 py-2 z-50 transform origin-top-right transition-all animate-in fade-in slide-in-from-top-2">
                   <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700 mb-1">
-                    <p className="text-gray-600 dark:text-gray-400">{currentUser.username}</p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{currentUser.role}</p>
+                    <p className="text-sm font-semibold text-gray-800 dark:text-white">Admin User</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 truncate">admin@hotelhub.com</p>
                   </div>
 
                   <NavLink
@@ -312,7 +270,7 @@ useEffect(() => {
                     Hồ sơ cá nhân
                   </NavLink>
 
-                  <div className="my-1 border-t border-gray-100 dark:border-gray-700">{currentUser.username}</div>
+                  <div className="my-1 border-t border-gray-100 dark:border-gray-700"></div>
 
                   <button
                     onClick={() => {

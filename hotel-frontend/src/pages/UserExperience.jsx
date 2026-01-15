@@ -81,7 +81,7 @@ export default function UserExperience() {
   };
 
   return (
-    <div className="space-y-6 pb-10 overflow-y-auto h-full p-2 sm:p-4">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
       {/* Header đơn giản cho User */}
       <header className="bg-white dark:bg-gray-900 shadow p-4 mb-4 flex justify-between items-center">
          <h1 className="text-xl font-bold text-primary">Mambo Hotel Booking</h1>

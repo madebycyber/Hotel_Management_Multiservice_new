@@ -20,7 +20,6 @@
     "services": "Services",
     "invoices": "Invoices",
     "hotel_name": "Mambo Hotel Management",
-    "audit_log": "Audit Log",
     "common": {
     "add_new": "+ Add New",
     "search": "Search...",

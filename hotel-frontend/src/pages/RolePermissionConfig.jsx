@@ -1,4 +1,3 @@
-// src/pages/RolePermissionConfig.jsx
 import React, { useEffect, useState } from 'react';
 import axiosClient from '../api/axiosClient';
 
@@ -39,6 +38,7 @@ const INITIAL_RESOURCES = [
 export default function RolePermissionConfig() {
     const [roles, setRoles] = useState([]);
     const [currentPermissions, setCurrentPermissions] = useState([]);
+    // State quản lý danh sách API (Resource) để có thể thêm mới
     const [resources, setResources] = useState(INITIAL_RESOURCES); 
     const [loading, setLoading] = useState(false);
 
@@ -78,48 +78,20 @@ export default function RolePermissionConfig() {
     // --- XỬ LÝ THÊM API MỚI VÀO UI ---
     const handleAddApi = (e) => {
         e.preventDefault();
+        // Thêm vào danh sách hiển thị trên UI
         setResources(prev => [...prev, newApi]);
         setShowApiModal(false);
         setNewApi({ name: '', endpoint: '', method: 'GET' });
+        // Lưu ý: Đây chỉ là thêm vào danh sách hiển thị để bạn có thể tích chọn checkbox.
+        // Khi tích checkbox -> Backend mới lưu quyền vào DB.
     };
 
-    // Hàm kiểm tra quyền để hiển thị checkbox
+    // ... (Hàm hasPermission và handleToggle giữ nguyên như bài trước) ...
     const hasPermission = (roleCode, endpoint, method) => {
         return currentPermissions.some(p => p.rolecode === roleCode && p.apiendpoint === endpoint && p.httpmethod === method);
     };
-
-    // --- XỬ LÝ KHI CLICK CHECKBOX (QUAN TRỌNG) ---
     const handleToggle = async (roleCode, resource, isChecked) => {
-        // 1. Optimistic Update (Cập nhật giao diện ngay lập tức)
-        const tempPerm = { 
-            rolecode: roleCode, 
-            apiendpoint: resource.endpoint, 
-            httpmethod: resource.method 
-        };
-        
-        if (isChecked) {
-            setCurrentPermissions(prev => [...prev, tempPerm]);
-        } else {
-            setCurrentPermissions(prev => prev.filter(p => 
-                !(p.rolecode === roleCode && p.apiendpoint === resource.endpoint && p.httpmethod === resource.method)
-            ));
-        }
-
-        setLoading(true);
-        try {
-            // 2. Gọi API xuống Backend
-            await axiosClient.post('/api/admin/permissions/update', {
-                roleCode: roleCode,
-                apiEndpoint: resource.endpoint,
-                httpMethod: resource.method,
-                enable: isChecked
-            });
-        } catch (error) {
-            alert("Lỗi cập nhật quyền! Đang hoàn tác...");
-            loadData(); // Revert lại dữ liệu cũ nếu lỗi
-        } finally {
-            setLoading(false);
-        }
+        /* Code handleToggle cũ của bạn */
     };
 
     return (
@@ -152,7 +124,7 @@ export default function RolePermissionConfig() {
                         {resources.map((res, idx) => (
                             <tr key={idx} className="hover:bg-blue-50 transition-colors">
                                 <td className="px-6 py-4">
-                                    <div className="text-gray-600 dark:text-gray-400 font-bold">{res.name}</div>
+                                    <div className="text-gray-600 dark:text-gray-400">{res.name}</div>
                                     <code className="text-xs text-gray-500 bg-gray-100 px-1 py-0.5 rounded">{res.method} {res.endpoint}</code>
                                 </td>
                                 {roles.map(role => (

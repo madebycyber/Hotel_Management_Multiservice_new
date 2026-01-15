@@ -11,9 +11,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
 
 @RestController
 @RequestMapping("/api/admin/users") // ĐÚNG đường dẫn Frontend gọi
@@ -58,5 +55,4 @@ public class UserController {
 
         return ResponseEntity.ok(userPage);
     }
-    
 }

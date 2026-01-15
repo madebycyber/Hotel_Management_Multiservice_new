@@ -1,11 +1,7 @@
 package com.example.booking_service.controller;
 
-import com.example.booking_service.aop.LogAudit;
 import com.example.booking_service.entity.KhachHang;
 import com.example.booking_service.repository.KhachHangRepository;
-
-import lombok.extern.java.Log;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -41,7 +37,6 @@ public class CustomerController {
 
     // Tạo mới
     @PostMapping
-    @LogAudit(action = "CREATE_CUSTOMER", description = "Tạo mới khách hàng")
     public ResponseEntity<?> create(@RequestBody KhachHang kh) {
         if (kh.getMaKh() == null || kh.getMaKh().isEmpty()) {
             Long nextVal = jdbcTemplate.queryForObject("SELECT nextval('seq_khachhang_ma')", Long.class);
@@ -52,7 +47,6 @@ public class CustomerController {
 
     // Cập nhật
     @PutMapping("/{id}")
-    @LogAudit(action = "UPDATE_CUSTOMER", description = "Cập nhật thông tin khách hàng")
     public ResponseEntity<?> update(@PathVariable String id, @RequestBody KhachHang kh) {
         if(!khachHangRepository.existsById(id)) return ResponseEntity.notFound().build();
         kh.setMaKh(id);
@@ -61,7 +55,6 @@ public class CustomerController {
 
     // Xóa
     @DeleteMapping("/{id}")
-    @LogAudit(action = "DELETE_CUSTOMER", description = "Xóa khách hàng")
     public ResponseEntity<?> delete(@PathVariable String id) {
         try {
             khachHangRepository.deleteById(id);

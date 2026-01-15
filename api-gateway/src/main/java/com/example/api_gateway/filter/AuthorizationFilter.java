@@ -35,10 +35,7 @@ public class AuthorizationFilter implements GlobalFilter, Ordered {
         String method = exchange.getRequest().getMethod().name();
 
         // 1. Bỏ qua các API Public (Auth, Public)
-        if (requestPath.startsWith("/api/auth") || 
-            requestPath.startsWith("/api/public") || 
-            requestPath.startsWith("/images") ||
-            requestPath.startsWith("/api/internal")) { // <--- CHO PHÉP ẢNH ĐI QUA
+        if (requestPath.startsWith("/api/auth") || requestPath.startsWith("/api/public")) {
             return chain.filter(exchange);
         }
 

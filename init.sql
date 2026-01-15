@@ -1,3 +1,0 @@
-CREATE DATABASE identity_db;
-CREATE DATABASE room_db;
-CREATE DATABASE booking_db;
