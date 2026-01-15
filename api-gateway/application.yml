@@ -43,7 +43,11 @@ spring:
         - id: identity-service
           uri: lb://IDENTITY-SERVICE
           predicates:
+<<<<<<< HEAD
             - Path=/api/auth/**
+=======
+            - Path=/api/auth/**, /api/users/**, /api/permissions/**, /api/roles/**, /api/admin/**
+>>>>>>> parent of 0544b01 (UpDocker)
 
 eureka:
   client:

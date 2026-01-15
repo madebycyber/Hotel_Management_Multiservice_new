@@ -14,4 +14,28 @@ public class BookingController {
     public ResponseEntity<?> create(@RequestBody BookingRequestDTO req) {
         return ResponseEntity.ok(service.createBooking(req));
     }
+<<<<<<< HEAD
+=======
+
+    // Trong BookingController.java
+    @PostMapping("/{id}/services")
+    public ResponseEntity<?> addServiceToBooking(@PathVariable String id, @RequestBody ServiceDTO serviceDTO) {
+        try {
+            service.addServiceToBooking(id, serviceDTO);
+            return ResponseEntity.ok("Thêm dịch vụ thành công");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/invoice/{bookingId}")
+    public ResponseEntity<?> generateInvoice(@PathVariable String bookingId) {
+        try {
+            return ResponseEntity.ok(service.generateInvoice(bookingId));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    
+>>>>>>> parent of 0544b01 (UpDocker)
 }

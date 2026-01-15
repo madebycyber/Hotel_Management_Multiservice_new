@@ -22,6 +22,7 @@ public class AuthConfig {
         return new CustomUserDetailsService(); // (Xem file dưới)
     }
 
+<<<<<<< HEAD
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf(csrf -> csrf.disable()) // Rất quan trọng để sửa lỗi 403 khi POST
@@ -30,6 +31,28 @@ public class AuthConfig {
                         .anyRequest().authenticated()
                 )
                 .build();
+=======
+@Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+            .csrf(csrf -> csrf.disable())
+            .authorizeHttpRequests(auth -> auth
+                // Cho phép các API Auth cơ bản
+                .requestMatchers("/api/auth/**").permitAll()
+                // Tất cả các request khác cứ cho qua Authentication, 
+                // DynamicPermissionFilter sẽ chặn ở bước sau
+                .anyRequest().authenticated() 
+            );
+
+        // Đăng ký JWT Filter trước (để xác thực User là ai)
+        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
+        // QUAN TRỌNG: Đăng ký Dynamic Filter SAU bước xác thực
+        // Nó sẽ chạy sau khi Spring đã biết User là ai
+        //http.addFilterAfter(dynamicPermissionFilter, UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
+>>>>>>> parent of 0544b01 (UpDocker)
     }
 
     @Bean

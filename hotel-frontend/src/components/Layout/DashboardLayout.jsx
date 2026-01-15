@@ -11,9 +11,22 @@ import {
   Bars3Icon, // hamburger
   SunIcon,
   MoonIcon,
+<<<<<<< HEAD
+=======
+  WalletIcon,
+  Square2StackIcon,
+  LockClosedIcon,
+  BuildingOfficeIcon,
+  BriefcaseIcon,
+  CalculatorIcon,
+  UserGroupIcon,
+  UserCircleIcon, // Thêm icon cho Profile
+  HomeIcon
+>>>>>>> parent of 0544b01 (UpDocker)
 } from '@heroicons/react/24/outline';
 
 const menuItems = [
+<<<<<<< HEAD
   { name: 'Dashboard', icon: BuildingOffice2Icon, path: '/dashboard' },
   { name: 'Phòng', icon: BuildingOffice2Icon, path: '/rooms' },
   { name: 'Loại phòng', icon: CalendarIcon, path: '/room-types' },
@@ -23,6 +36,21 @@ const menuItems = [
   { name: 'Khách hàng', icon: UsersIcon, path: '/customers' },
   { name: 'Hóa đơn', icon: CurrencyDollarIcon, path: '/invoices' },
   { name: 'Cài đặt', icon: Cog6ToothIcon, path: '/settings' },
+=======
+  { key: 'home', icon: HomeIcon, path: '/user-experience' },
+  { key: 'dashboard', icon: Square2StackIcon, path: '/dashboard' },
+  { key: 'rooms', icon: BuildingOffice2Icon, path: '/rooms' },
+  { key: 'room_types', icon: BuildingOfficeIcon, path: '/room-types' },
+  { key: 'bookings', icon: CalendarIcon, path: '/bookings' },
+  { key: 'booking-details', icon: WalletIcon, path: '/booking-details' },
+  { key: 'services', icon: CalculatorIcon, path: '/services' },
+  { key: 'customers', icon: UsersIcon, path: '/customers' },
+  { key: 'staff', icon: BriefcaseIcon, path: '/employees' },
+  { key: 'invoices', icon: CurrencyDollarIcon, path: '/invoices' },
+  { key: 'settings', icon: Cog6ToothIcon, path: '/settings' },
+  { key: 'role_permission', icon: LockClosedIcon, path: '/role-permissions' },
+  { key: 'users', icon: UserGroupIcon, path: '/users' },
+>>>>>>> parent of 0544b01 (UpDocker)
 ];
 
 export default function DashboardLayout({ children }) {
@@ -41,7 +69,11 @@ export default function DashboardLayout({ children }) {
     navigate('/login');
   };
 
+<<<<<<< HEAD
     useEffect(() => {
+=======
+  useEffect(() => {
+>>>>>>> parent of 0544b01 (UpDocker)
     if (darkMode) {
         document.documentElement.classList.add('dark');
     } else {
@@ -54,7 +86,6 @@ export default function DashboardLayout({ children }) {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('theme', theme);
     }, [theme]);
-
 
 
   return (
@@ -223,11 +254,57 @@ export default function DashboardLayout({ children }) {
               </div>
             </div>
 
+<<<<<<< HEAD
             <div className="flex items-center gap-2 border-l pl-4 border-gray-300 dark:border-gray-600">
                  <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white font-bold">
                     A
                  </div>
                  <span className="text-gray-700 dark:text-gray-300 font-medium hidden sm:block">Admin</span>
+=======
+            {/* USER DROPDOWN (NEW) */}
+            <div className="relative" ref={userMenuRef}>
+              <button 
+                onClick={() => setUserMenuOpen(!userMenuOpen)}
+                className="flex items-center gap-2 border-l pl-4 border-gray-300 dark:border-gray-600 hover:opacity-80 transition-opacity"
+              >
+                 <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white font-bold shadow-md">
+                   A
+                 </div>
+                 <span className="text-gray-700 dark:text-gray-300 font-medium hidden sm:block">Admin</span>
+              </button>
+
+              {/* Menu Content */}
+              {userMenuOpen && (
+                <div className="absolute right-0 top-full mt-3 w-56 bg-white dark:bg-gray-800 shadow-xl rounded-xl border border-gray-200 dark:border-gray-700 py-2 z-50 transform origin-top-right transition-all animate-in fade-in slide-in-from-top-2">
+                  <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700 mb-1">
+                    <p className="text-sm font-semibold text-gray-800 dark:text-white">Admin User</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 truncate">admin@hotelhub.com</p>
+                  </div>
+
+                  <NavLink
+                    to="/profile"
+                    onClick={() => setUserMenuOpen(false)}
+                    className="flex items-center px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                  >
+                    <UserCircleIcon className="w-5 h-5 mr-3 text-gray-400" />
+                    Hồ sơ cá nhân
+                  </NavLink>
+
+                  <div className="my-1 border-t border-gray-100 dark:border-gray-700"></div>
+
+                  <button
+                    onClick={() => {
+                        setUserMenuOpen(false);
+                        handleLogout();
+                    }}
+                    className="flex w-full items-center px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                  >
+                    <ArrowRightOnRectangleIcon className="w-5 h-5 mr-3" />
+                    Đăng xuất
+                  </button>
+                </div>
+              )}
+>>>>>>> parent of 0544b01 (UpDocker)
             </div>
           </div>
         </header>

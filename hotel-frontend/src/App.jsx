@@ -10,6 +10,19 @@ import Invoices from './pages/Invoices';     // ví dụ trang Hóa đơn
 import Settings from './pages/Settings';     // ví dụ trang Cài đặt
 import Services from './pages/Services';
 import LoaiPhong from './pages/LoaiPhong';
+<<<<<<< HEAD
+=======
+import BookingDetails from './pages/BookingDetails';
+import Employees from './pages/Employees';
+import UserExperience from './pages/UserExperience';
+import UserRoomList from './pages/UserRoomList';
+import BookingFlow from './pages/BookingFlow';
+import PaymentMockup from './pages/PaymentMockup';
+import UserProfile from './pages/UserProfile';
+import RolePermissionConfig from './pages/RolePermissionConfig';
+import ForbiddenPage from './pages/ForbiddenPage';
+import Users from './pages/Users';
+>>>>>>> parent of 0544b01 (UpDocker)
 
 import DashboardLayout from './components/Layout/DashboardLayout';
 
@@ -84,6 +97,53 @@ function App() {
         />
 
         <Route
+<<<<<<< HEAD
+=======
+          path="/employees"
+          element={
+            <PrivateRoute>
+              <DashboardLayout>
+                <Employees />
+              </DashboardLayout>
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/role-permissions"
+          element={
+            <PrivateRoute>
+              <DashboardLayout>
+                <RolePermissionConfig />
+              </DashboardLayout>
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/profile"
+          element={
+            <PrivateRoute>
+              <DashboardLayout>
+                <UserProfile />
+              </DashboardLayout>
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/users"
+          element={
+            <PrivateRoute>
+              <DashboardLayout>
+                <Users />
+              </DashboardLayout>
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+>>>>>>> parent of 0544b01 (UpDocker)
           path="/invoices"
           element={
             <PrivateRoute>
