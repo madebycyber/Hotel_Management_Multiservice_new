@@ -22,6 +22,9 @@ import UserProfile from './pages/UserProfile';
 import RolePermissionConfig from './pages/RolePermissionConfig';
 import ForbiddenPage from './pages/ForbiddenPage';
 import Users from './pages/Users';
+<<<<<<< HEAD
+>>>>>>> parent of 0544b01 (UpDocker)
+=======
 >>>>>>> parent of 0544b01 (UpDocker)
 
 import DashboardLayout from './components/Layout/DashboardLayout';

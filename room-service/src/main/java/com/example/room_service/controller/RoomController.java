@@ -17,6 +17,7 @@ public class RoomController {
     // --- ROOMS ---
     @GetMapping("/rooms")
 <<<<<<< HEAD
+<<<<<<< HEAD
     public ResponseEntity<List<Phong>> getAllRooms() {
         return ResponseEntity.ok(roomService.getAllRooms());
     }
@@ -25,6 +26,8 @@ public class RoomController {
     @PostMapping("/rooms")
     public ResponseEntity<?> createRoom(@RequestBody RoomRequestDTO roomDTO) {
 =======
+=======
+>>>>>>> parent of 0544b01 (UpDocker)
     public ResponseEntity<Page<Phong>> getAllRooms(
             @RequestParam(defaultValue = "0") int page, // Mặc định trang 0
             @RequestParam(defaultValue = "10") int size // Mặc định 10 dòng
@@ -54,9 +57,12 @@ public class RoomController {
     // --- LOẠI PHÒNG (Cần thiết cho dropdown frontend) ---
     @GetMapping("/loai-phong")
 <<<<<<< HEAD
+<<<<<<< HEAD
     public ResponseEntity<List<LoaiPhong>> getAllLoaiPhong() {
         return ResponseEntity.ok(roomService.getAllLoaiPhong());
 =======
+=======
+>>>>>>> parent of 0544b01 (UpDocker)
     public ResponseEntity<Page<LoaiPhong>> getAllLoaiPhong(
         @RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "10") int size
@@ -73,9 +79,12 @@ public class RoomController {
     // --- DỊCH VỤ ---
     @GetMapping("/dich-vu")
 <<<<<<< HEAD
+<<<<<<< HEAD
     public ResponseEntity<List<DichVu>> getAllDichVu() {
         return ResponseEntity.ok(roomService.getAllDichVu());
 =======
+=======
+>>>>>>> parent of 0544b01 (UpDocker)
     public ResponseEntity<Page<DichVu>> getAllDichVu(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size

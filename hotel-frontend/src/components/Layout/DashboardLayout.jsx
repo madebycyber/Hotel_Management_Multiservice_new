@@ -22,6 +22,9 @@ import {
   UserGroupIcon,
   UserCircleIcon, // Thêm icon cho Profile
   HomeIcon
+<<<<<<< HEAD
+>>>>>>> parent of 0544b01 (UpDocker)
+=======
 >>>>>>> parent of 0544b01 (UpDocker)
 } from '@heroicons/react/24/outline';
 
@@ -50,6 +53,9 @@ const menuItems = [
   { key: 'settings', icon: Cog6ToothIcon, path: '/settings' },
   { key: 'role_permission', icon: LockClosedIcon, path: '/role-permissions' },
   { key: 'users', icon: UserGroupIcon, path: '/users' },
+<<<<<<< HEAD
+>>>>>>> parent of 0544b01 (UpDocker)
+=======
 >>>>>>> parent of 0544b01 (UpDocker)
 ];
 
@@ -70,8 +76,11 @@ export default function DashboardLayout({ children }) {
   };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     useEffect(() => {
 =======
+=======
+>>>>>>> parent of 0544b01 (UpDocker)
   useEffect(() => {
 >>>>>>> parent of 0544b01 (UpDocker)
     if (darkMode) {
@@ -86,7 +95,6 @@ export default function DashboardLayout({ children }) {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('theme', theme);
     }, [theme]);
-
 
   return (
     <div className="flex h-screen overflow-hidden bg-gray-50 dark:bg-gray-900">

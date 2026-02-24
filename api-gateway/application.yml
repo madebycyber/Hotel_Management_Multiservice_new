@@ -44,7 +44,11 @@ spring:
           uri: lb://IDENTITY-SERVICE
           predicates:
 <<<<<<< HEAD
+<<<<<<< HEAD
             - Path=/api/auth/**
+=======
+            - Path=/api/auth/**, /api/users/**, /api/permissions/**, /api/roles/**, /api/admin/**
+>>>>>>> parent of 0544b01 (UpDocker)
 =======
             - Path=/api/auth/**, /api/users/**, /api/permissions/**, /api/roles/**, /api/admin/**
 >>>>>>> parent of 0544b01 (UpDocker)

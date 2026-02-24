@@ -17,6 +17,9 @@ public class AuthController {
 <<<<<<< HEAD
 =======
     // 1. Đăng ký (Logic cơ bản)
+<<<<<<< HEAD
+>>>>>>> parent of 0544b01 (UpDocker)
+=======
 >>>>>>> parent of 0544b01 (UpDocker)
     @PostMapping("/register")
     public String addNewUser(@RequestBody AuthRequest request) {
@@ -25,8 +28,11 @@ public class AuthController {
 
     @PostMapping("/login")
 <<<<<<< HEAD
+<<<<<<< HEAD
     public String getToken(@RequestBody AuthRequest request) {
 =======
+=======
+>>>>>>> parent of 0544b01 (UpDocker)
     // Đổi kiểu trả về từ String sang ResponseEntity<?>
     public ResponseEntity<?> getToken(@RequestBody AuthRequest request) {
 >>>>>>> parent of 0544b01 (UpDocker)
